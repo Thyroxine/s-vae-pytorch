@@ -39,7 +39,7 @@ class VonMisesFisher(torch.distributions.Distribution):
         self.scale = scale
         self.device = loc.device
         self.__m = loc.shape[-1]
-        self.__e1 = (torch.Tensor([1.0] + [0] * (loc.shape[-1] - 1))).to(self.device)
+        self.__e1 = (torch.tensor([1.0] + [0.0] * (loc.shape[-1] - 1))).to(self.device)
         self.k = k
 
         super().__init__(self.loc.size(), validate_args=validate_args)
@@ -77,7 +77,7 @@ class VonMisesFisher(torch.distributions.Distribution):
         self.__w = (
             1
             + torch.stack(
-                [torch.log(u), torch.log(1 - u) - 2 * self.scale], dim=0
+                [torch.log(u).view(-1,1), (torch.log(1 - u) - 2 * self.scale).view(-1,1)], dim=0
             ).logsumexp(0)
             / self.scale
         )
